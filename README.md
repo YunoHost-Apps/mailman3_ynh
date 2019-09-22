@@ -25,6 +25,8 @@ This is GNU Mailman, a mailing list management system distributed under the term
 
 * [Official demo](https://lists.mailman3.org/mailman3/lists/)
 
+No user/password is provided, so you must sign up.
+
 ## Post-installation steps
 
 ### Setup Admin User
