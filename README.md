@@ -66,6 +66,8 @@ On your YunoHost, all the configuration files you need to worry about are in:
 
 It is important to note that this package makes use of the [mailman3-full](http://docs.mailman3.org/en/latest/prodsetup.html#distribution-packages) Debian package contained in the Debian Stretch backports repository.
 
+Finally, you also configure things through the Django web admin available at `/admin/`.
+
 ## Documentation
 
  * [Official documentation](http://docs.mailman3.org/en/latest/index.html)
