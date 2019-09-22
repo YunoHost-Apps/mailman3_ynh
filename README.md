@@ -15,7 +15,7 @@ This is GNU Mailman, a mailing list management system distributed under the term
 
 > http://docs.mailman3.org/
 
-**Shipped version:** 3.2.1
+**Shipped version:** 3.2.0
 
 ## Screenshots
 
