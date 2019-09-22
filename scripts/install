@@ -141,7 +141,7 @@ ynh_replace_string --match_string="__DB_NAME__" --replace_string="$app" --target
 ynh_replace_string --match_string="__DB_PWD__" --replace_string="$db_pwd_app" --target_file="/etc/mailman3/mailman.cfg"
 ynh_replace_string --match_string="__PORT_WEB__" --replace_string="$port_web" --target_file="/etc/mailman3/mailman.cfg"
 ynh_replace_string --match_string="__REST_API_ADMIN_USER__" --replace_string="$rest_api_admin" --target_file="/etc/mailman3/mailman.cfg"
-ynh_replace_string --match_string="__REST_API_ADMIN_PWD__" --replace_string="$rest__api_admin_pwd" --target_file="/etc/mailman3/mailman.cfg"
+ynh_replace_string --match_string="__REST_API_ADMIN_PWD__" --replace_string="$rest_api_admin_pwd" --target_file="/etc/mailman3/mailman.cfg"
 
 # hyperkitty configuration
 archiver_key=$(head -n128 /dev/urandom | tail -n +1 | tr -dc -d 'a-z0-9' | head -c128)
