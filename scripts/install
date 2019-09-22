@@ -132,8 +132,8 @@ ynh_script_progression --message="Modifying necessary config files..." --weight=
 # mailman3 core configuration
 rest_api_admin="rest_admin"
 rest_api_admin_pwd=$(head -n15 /dev/urandom | tail -n +1 | tr -dc -d 'a-z0-9' | head -c15)
-ynh_app_setting_set --app=$app --key=rest_admin--value="$rest_api_admin"
-ynh_app_setting_set --app=$app --key=rest_admin_pwd--value="$rest_api_admin_pwd"
+ynh_app_setting_set --app=$app --key=rest_admin --value="$rest_api_admin"
+ynh_app_setting_set --app=$app --key=rest_admin_pwd --value="$rest_api_admin_pwd"
 cp -f ../conf/mailman.cfg /etc/mailman3/mailman.cfg
 ynh_replace_string --match_string="__DOMAIN__" --replace_string="$domain" --target_file="/etc/mailman3/mailman.cfg"
 ynh_replace_string --match_string="__DB_USER__" --replace_string="$app" --target_file="/etc/mailman3/mailman.cfg"
