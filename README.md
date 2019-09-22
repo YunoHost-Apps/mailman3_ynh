@@ -40,6 +40,14 @@ $ python3 manage.py createsuperuser
 
 You should then attempt to log in with this user account in the web UI. Once you've logged in, a confirmation mail will be sent to your email address that you specified. Therefore, you should have something like [Rainloop](https://github.com/YunoHost-Apps/rainloop_ynh) installed to view mail on your YunoHost installation.
 
+### Setup your main domain
+
+You'll need to log in as administrator and visit the `/admin/site/site`.
+
+If you're Mailman3 is setup on `myyunohost.org` then that would be the following:
+
+> myyunohost.org/admin/site/site
+
 ## Configuration
 
 Mailman3 is made up of 3 moving parts:
