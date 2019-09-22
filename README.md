@@ -9,6 +9,10 @@
 
 *If you don't have YunoHost, please see [here](https://yunohost.org/#/install) to know how to install and enjoy it.*
 
+## Status
+
+**Experimental.**
+
 ## Overview
 
 This is GNU Mailman, a mailing list management system distributed under the terms of the GNU General Public License (GPL) version 3 or later. Mailman is written in Python which is available for all platforms that Mailman is supported on, including GNU/Linux and most other Unix-like operating systems (e.g. Solaris, *BSD, MacOSX, etc.).
