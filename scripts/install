@@ -100,6 +100,9 @@ DEBIAN_FRONTEND=noninteractive apt-get \
   install \
   $mailman3_suite_pkg
 
+# Note(decentral1se): See https://github.com/YunoHost-Apps/mailman3_ynh/issues/2
+apt-mark hold $mailman3_suite_pkg
+
 #=================================================
 # CREATE A POSTGRESQL DATABASE
 #=================================================
