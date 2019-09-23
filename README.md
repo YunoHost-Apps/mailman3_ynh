@@ -52,7 +52,33 @@ If you're Mailman3 is setup on `myyunohost.org` then that would be the following
 
 > myyunohost.org/admin/site/site
 
-## Configuration
+### Configure Postfix and LMTP
+
+Mailman3 implements an LMTP server for receiving mail from Postfix. This means that Mailman3 doesn't need anything from Dovecot. This is important to understand because Dovecot is the default YunoHost local delivery agent. Therefore, the default YunoHost Postfix configuration uses Dovecot. So, in order to deliver incoming mail, we need to override which delivery agent handles which mails based on the addresses. In other words, if you create a mailing list "mylist@myyunohost.org" you want Mailman3's LMTP server to receive this, *not* Dovecot, becaues Dovecot only delivers to LDAP created user accounts.
+
+You'll need to add this to your Postfix configuration:
+
+```bash
+owner_request_special = no
+
+transport_maps =
+  hash:/var/lib/mailman3/data/postfix_lmtp
+
+local_recipient_maps =
+  hash:/var/lib/mailman3/data/postfix_lmtp
+
+virtual_mailbox_maps = ldap:/etc/postfix/ldap-accounts.cf, hash:/var/lib/mailman3/data/postfix_lmtp
+```
+
+And then run:
+
+```bash
+$ mailman aliases
+```
+
+This is unfortunately a manual step at this point because the package remains experimental. Once it matures, this will be integrated into a hook or the default Postfix configuration. For now, remember that when you run `yunohost tools regen-conf postfix` or if any installation invokes `regen-conf`, your Postfix configuration will not be changed because it has diverged from the default configuration. This may cause you problems if YunoHost core expects that there is some new value in your Postfix configuration.
+
+## General Configuration
 
 Mailman3 is made up of 3 moving parts:
 
@@ -72,17 +98,11 @@ It is important to note that this package makes use of the [mailman3-full](http:
 
 Finally, you also configure things through the Django web admin available at `/admin/`.
 
-## Documentation
-
- * [Official documentation](http://docs.mailman3.org/en/latest/index.html)
-
 ## YunoHost specific features
 
 #### Multi-users support
 
-* No LDAP support
-* HTTP Auth is supported
-* Only one installation per YunoHost
+* No LDAP support, all users must sign up themselves
 
 #### Supported architectures
 
@@ -97,6 +117,8 @@ Finally, you also configure things through the Django web admin available at `/a
 * Mailman3 must be configured to use a root domain (myyunohost.org and not myyunohost.org/mailman3).
 
 * You must have a HTTPS certificate installed on the root domain.
+
+* There may be only one installation per YunoHost.
 
 ## Mirroring
 
