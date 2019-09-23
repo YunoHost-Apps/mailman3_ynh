@@ -52,7 +52,7 @@ If you're Mailman3 is setup on `myyunohost.org` then that would be the following
 
 > myyunohost.org/admin/site/site
 
-### Configure Postfix and LMTP
+### Configure incoming mail
 
 Mailman3 implements an LMTP server for receiving mail from Postfix. This means that Mailman3 doesn't need anything from Dovecot. This is important to understand because Dovecot is the default YunoHost local delivery agent. Therefore, the default YunoHost Postfix configuration uses Dovecot. So, in order to deliver incoming mail, we need to override which delivery agent handles which mails based on the addresses. In other words, if you create a mailing list "mylist@myyunohost.org" you want Mailman3's LMTP server to receive this, *not* Dovecot, becaues Dovecot only delivers to LDAP created user accounts.
 
@@ -77,6 +77,10 @@ $ mailman aliases
 ```
 
 This is unfortunately a manual step at this point because the package remains experimental. Once it matures, this will be integrated into a hook or the default Postfix configuration. For now, remember that when you run `yunohost tools regen-conf postfix` or if any installation invokes `regen-conf`, your Postfix configuration will not be changed because it has diverged from the default configuration. This may cause you problems if YunoHost core expects that there is some new value in your Postfix configuration.
+
+### Configure outgoing mail
+
+Postfix relies on using SMTP which should be configured in your `/etc/postfix/main.cf`.
 
 ## General Configuration
 
