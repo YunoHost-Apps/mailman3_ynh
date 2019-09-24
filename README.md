@@ -50,7 +50,7 @@ You'll need to log in as administrator and visit the `/admin/site/site`.
 
 If you're Mailman3 is setup on `myyunohost.org` then that would be the following:
 
-> myyunohost.org/admin/site/site
+> https://myyunohost.org/admin/site/site
 
 ### Configure incoming mail
 
