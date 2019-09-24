@@ -50,7 +50,7 @@ You'll need to log in as administrator and visit the `/admin/site/site`.
 
 If you're Mailman3 is setup on `myyunohost.org` then that would be the following:
 
-> myyunohost.org/admin/site/site
+> https://myyunohost.org/admin/site/site
 
 ### Configure incoming mail
 
@@ -73,7 +73,7 @@ virtual_mailbox_maps = ldap:/etc/postfix/ldap-accounts.cf, hash:/var/lib/mailman
 And then run:
 
 ```bash
-$ mailman aliases
+$ sudo -su list mailman aliases
 ```
 
 This is unfortunately a manual step at this point because the package remains experimental. Once it matures, this will be integrated into a hook or the default Postfix configuration. For now, remember that when you run `yunohost tools regen-conf postfix` or if any installation invokes `regen-conf`, your Postfix configuration will not be changed because it has diverged from the default configuration. This may cause you problems if YunoHost core expects that there is some new value in your Postfix configuration.
