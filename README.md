@@ -106,7 +106,9 @@ Finally, you also configure things through the Django web admin available at `/a
 
 #### Multi-users support
 
-* No LDAP support, all users must sign up themselves
+* No LDAP support
+* Users can also just sign up themselves to manage details
+* Users can use mailing lists without signing up
 
 #### Supported architectures
 
