@@ -168,6 +168,14 @@ ynh_replace_string --match_string="__DB_USER__" --replace_string="$app_web" --ta
 ynh_replace_string --match_string="__DB_PWD__" --replace_string="$db_pwd_app_web" --target_file="/etc/mailman3/mailman-web.py"
 
 #=================================================
+# RUN DATABASE MIGRATIONS
+#=================================================
+
+ynh_script_progression --message="Running database migrations..." --weight=6
+
+cd /usr/share/mailman3-web && python3 manage.py migrate || ynh_die --message="Mailman3 migrations failed!"
+
+#=================================================
 # STORE THE CONFIG FILE CHECKSUM
 #=================================================
 
