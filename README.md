@@ -13,6 +13,10 @@
 
 **Experimental.**
 
+Please review the [issues list](https://github.com/YunoHost-Apps/mailman3_ynh/issues) before choosing to install this application.
+
+There is also a [community forum thread](https://forum.yunohost.org/t/community-app-mailman3-free-software-for-managing-electronic-mail-discussion-and-e-newsletter-lists/9077/2) for this application.
+
 ## Overview
 
 This is GNU Mailman, a mailing list management system distributed under the terms of the GNU General Public License (GPL) version 3 or later. Mailman is written in Python which is available for all platforms that Mailman is supported on, including GNU/Linux and most other Unix-like operating systems (e.g. Solaris, *BSD, MacOSX, etc.).
@@ -48,7 +52,7 @@ You should then attempt to log in with this user account in the web UI. Once you
 
 You'll need to log in as administrator and visit the `/admin/site/site`.
 
-If you're Mailman3 is setup on `myyunohost.org` then that would be the following:
+If you're Mailman3 is setup on `https://myyunohost.org` then that would be the following:
 
 > https://myyunohost.org/admin/site/site
 
@@ -82,23 +86,25 @@ This is unfortunately a manual step at this point because the package remains ex
 
 Postfix relies on using SMTP which should be configured in your `/etc/postfix/main.cf`.
 
+You should make sure that you have outgoing mail working before getting started with Mailman 3.
+
 ## General Configuration
 
-Mailman3 is made up of 3 moving parts:
+Mailman 3 or "The Mailman Suite" is made up of 5 moving parts. See the following documentation for more:
 
-* Mailman3 Core: https://mailman.readthedocs.io
-* Postorious: https://postorius.readthedocs.io
-* Hyperkitty: https://hyperkitty.readthedocs.io
-
-There is also documentation for "the suite" which is all the parts together:
-
-* https://docs.mailman3.org
+> http://docs.mailman3.org/en/latest/index.html#the-mailman-suite
 
 On your YunoHost, all the configuration files you need to worry about are in:
 
 * `/etc/mailman3/`
+* `/usr/share/mailman3-web/`
 
-It is important to note that this package makes use of the [mailman3-full](http://docs.mailman3.org/en/latest/prodsetup.html#distribution-packages) Debian package contained in the Debian Stretch backports repository.
+The services you need to manage can be checked with:
+
+* `systemctl status mailman3`
+* `systemctl status mailman3-web`
+
+It is important to note that this package makes use of the [mailman3-full](http://docs.mailman3.org/en/latest/prodsetup.html#distribution-packages) Debian package contained in the Debian Stretch backports repository. The default installation assumes the use of a SQLite3 database but the installation script overrides this and uses a PostgreSQL database instead.
 
 Finally, you also configure things through the Django web admin available at `/admin/`.
 
@@ -106,7 +112,7 @@ Finally, you also configure things through the Django web admin available at `/a
 
 #### Multi-users support
 
-* No LDAP support
+* No LDAP support yet (apparently under development)
 * Users can also just sign up themselves to manage details
 * Users can use mailing lists without signing up
 
@@ -117,10 +123,10 @@ Finally, you also configure things through the Django web admin available at `/a
 
 ## Limitations
 
-* Migrating from Mailman 2.X is not supported. This is a manual and
-  experimental process. Please see [the documentation](https://docs.mailman3.org/en/latest/migration.html).
+* Migrating from Mailman 2.X is not officially supported, sorry. However, there is a manual and
+  which details an experimental process. Please see [the documentation](https://docs.mailman3.org/en/latest/migration.html).
 
-* Mailman3 must be configured to use a root domain (myyunohost.org and not myyunohost.org/mailman3).
+* Mailman3 must be configured to use a root domain (https://myyunohost.org and not https://myyunohost.org/mailman3).
 
 * You must have a HTTPS certificate installed on the root domain.
 
