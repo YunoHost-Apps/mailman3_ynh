@@ -34,6 +34,14 @@
                 "example": "myyunohost.org"
             },
             {
+                "name": "domain_ip",
+                "type": "string",
+                "ask": {
+                    "en": "Specify the IP address of your domain"
+                },
+                "example": "192.168.24.6"
+            },
+            {
                 "name": "is_public",
                 "type": "boolean",
                 "ask": {

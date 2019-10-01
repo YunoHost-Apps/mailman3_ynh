@@ -1,6 +1,7 @@
 ;; Test complet
 	; Manifest
 		domain="domain.tld"	(DOMAIN)
+		domain_ip="192.168.1.1"
 		is_public=1	(PUBLIC|public=1|private=0)
 	; Checks
 		pkg_linter=1
@@ -23,4 +24,4 @@ Notification=none
 ;;; Upgrade options
 	; commit=CommitHash
 		name=Name and date of the commit.
-		manifest_arg=domain=DOMAIN&is_public=1
+		manifest_arg=domain=DOMAIN&domain_ip='192.168.1.1'&is_public=1
