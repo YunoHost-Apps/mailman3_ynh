@@ -3,8 +3,8 @@
     "id": "mailman3",
     "packaging_format": 1,
     "description": {
-        "en": "Mailman3 for YunoHost",
-        "fr": "Mailman3 pour YunoHost."
+        "en": "Electronic mailing lists manager",
+        "fr": "Un gestionnaire de liste de discussion par email"
     },
     "version": "1.0~ynh1",
     "url": "http://docs.mailman3.org/",
