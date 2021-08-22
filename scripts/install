@@ -14,7 +14,7 @@ source /usr/share/yunohost/helpers
 #=================================================
 
 ynh_clean_setup () {
-  ynh_clean_check_starting
+	ynh_clean_check_starting
 }
 # Exit if an error occurs during the execution of the script
 ynh_abort_if_errors
@@ -131,7 +131,7 @@ ynh_add_config --template="../conf/mailman-web.py" --destination="/etc/mailman3/
 #=================================================
 # RUN DATABASE MIGRATIONS
 #=================================================
-ynh_script_progression --message="Running database migrations..." --weight=6
+ynh_script_progression --message="Running database migrations..."
 
 pushd /usr/share/mailman3-web
 	python3 manage.py migrate || ynh_die --message="Mailman3 migrations failed!"
