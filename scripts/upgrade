@@ -86,7 +86,8 @@ ynh_install_app_dependencies $pkg_dependencies
 #=================================================
 ynh_script_progression --message="Integrating service in YunoHost..."
 
-yunohost service add $app --description="A short description of the app" --log="/var/log/$app/$app.log"
+yunohost service add $app --description="Mailman3 daemon"
+yunohost service add "$app-web" --description="Mailman3 web daemon"
 
 #=================================================
 # START SYSTEMD SERVICE
