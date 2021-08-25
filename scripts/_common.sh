@@ -4,9 +4,8 @@
 # COMMON VARIABLES
 #=================================================
 
-pkg_dependencies="postgresql lynx"
-
-mailman3_suite_pkg="mailman3-full"
+# dependencies used by the app
+pkg_dependencies="postgresql lynx mailman3-full"
 
 #=================================================
 # PERSONAL HELPERS
@@ -14,4 +13,8 @@ mailman3_suite_pkg="mailman3-full"
 
 #=================================================
 # EXPERIMENTAL HELPERS
+#=================================================
+
+#=================================================
+# FUTURE OFFICIAL HELPERS
 #=================================================

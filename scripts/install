@@ -8,229 +8,193 @@
 
 source _common.sh
 source /usr/share/yunohost/helpers
-source ynh_add_extra_apt_repos__3
 
 #=================================================
 # MANAGE SCRIPT FAILURE
 #=================================================
 
 ynh_clean_setup () {
-  ynh_clean_check_starting
+	ynh_clean_check_starting
 }
-
+# Exit if an error occurs during the execution of the script
 ynh_abort_if_errors
 
 #=================================================
 # RETRIEVE ARGUMENTS FROM THE MANIFEST
 #=================================================
 
-app=$YNH_APP_INSTANCE_NAME
-app_web="mailman3_web"
-
 domain=$YNH_APP_ARG_DOMAIN
-domain_ip=$YNH_APP_ARG_DOMAIN_IP
+path_url="/"
 is_public=$YNH_APP_ARG_IS_PUBLIC
+
+app=$YNH_APP_INSTANCE_NAME
 
 #=================================================
 # CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
 #=================================================
+ynh_script_progression --message="Validating installation parameters..."
 
-ynh_script_progression --message="Validating installation parameters..." --weight=2
+test ! -e /usr/share/$app-web || ynh_die --message="Mailman3 is already installed !"
 
-test ! -e /usr/share/mailman3-web || ynh_die --message="Mailman3 is already installed?"
+test ! -e /etc/$app || ynh_die --message="Mailman3 is already installed !"
 
-test ! -e /etc/mailman3 || ynh_die --message="Mailman3 is already installed?"
+# Register (book) web path
+ynh_webpath_register --app=$app --domain=$domain --path_url=$path_url
 
 #=================================================
 # STORE SETTINGS FROM MANIFEST
 #=================================================
-
-ynh_script_progression --message="Storing installation settings..." --weight=1
+ynh_script_progression --message="Storing installation settings..."
 
 ynh_app_setting_set --app=$app --key=domain --value=$domain
-ynh_app_setting_set --app=$app --key=domain_ip --value=$domain_ip
-ynh_app_setting_set --app=$app --key=is_public --value=$is_public
-ynh_app_setting_set --app=$app --key=path --value="/"
+ynh_app_setting_set --app=$app --key=path --value=$path_url
 
 #=================================================
 # STANDARD MODIFICATIONS
 #=================================================
-
-#=================================================
-# NGINX CONFIGURATION
-#=================================================
-
-ynh_script_progression --message="Configuring NGINX web server..." --weight=3
-
-ynh_add_nginx_config
-
-#=================================================
 # FIND AND OPEN A PORT
 #=================================================
+ynh_script_progression --message="Finding an available port..."
 
-ynh_script_progression --message="Configuring firewall..." --weight=1
-
-port_web=$(ynh_find_port --port=3000)
-
-ynh_app_setting_set --app=$app --key=port_web --value=$port_web
-
-#=================================================
-# ENABLE BACKPORTS REPOSITORY
-#=================================================
-
-ynh_script_progression --message="Enabling stretch backports ..." --weight=2
-
-ynh_install_extra_repo \
-  --repo="deb http://deb.debian.org/debian stretch-backports main" \
-  --name=stretch-backports
+# Find an available port
+port=$(ynh_find_port --port=8095)
+ynh_app_setting_set --app=$app --key=port --value=$port
 
 #=================================================
 # INSTALL DEPENDENCIES
 #=================================================
+ynh_script_progression --message="Installing dependencies..."
 
-ynh_script_progression --message="Installing dependencies..." --weight=10
-
-ynh_install_app_dependencies $pkg_dependencies
-
-# Note(decentral1se): enable backports during install
-DEBIAN_FRONTEND=noninteractive apt-get \
-  --no-remove \
-  --assume-yes \
-  -o Dpkg::Options::=--force-confdef \
-  -o Dpkg::Options::=--force-confold \
-  -t stretch-backports \
-  install \
-  $mailman3_suite_pkg
-
-# Note(decentral1se): See https://github.com/YunoHost-Apps/mailman3_ynh/issues/2
-apt-mark hold $mailman3_suite_pkg
+ynh_exec_warn_less ynh_install_app_dependencies $pkg_dependencies
 
 #=================================================
 # CREATE A POSTGRESQL DATABASE
 #=================================================
-
-ynh_script_progression --message="Creating PostgreSQL databases..." --weight=5
+ynh_script_progression --message="Creating a PostgreSQL database..."
 
 ynh_psql_test_if_first_run
 
-# mailman3 database
-db_pwd_app=$(ynh_string_random 30)
-ynh_app_setting_set --app=$app --key=db_name_app --value=$app
-ynh_app_setting_set --app=$app --key=db_user_app --value=$app
+# mailman3-app database
+db_name_app=$(ynh_sanitize_dbid --db_name="${app}_app")
+db_user_app=$db_name_app
+db_pwd_app=$(ynh_string_random --length=30)
+ynh_app_setting_set --app=$app --key=db_name_app --value=$db_name_app
 ynh_app_setting_set --app=$app --key=db_pwd_app --value=$db_pwd_app
-ynh_psql_create_user "$app" "$db_pwd_app"
-ynh_psql_create_db "$app" "$app"
+ynh_psql_setup_db --db_user=$db_user_app --db_name=$db_name_app --db_pwd=$db_pwd_app
 
 # mailman3-web database
-db_pwd_app_web=$(ynh_string_random 30)
-ynh_app_setting_set --app=$app --key=db_name_app_web --value="$app_web"
-ynh_app_setting_set --app=$app --key=db_user_app_web --value="$app_web"
-ynh_app_setting_set --app=$app --key=db_pwd_app_web --value=$db_pwd_app_web
-ynh_psql_create_user "$app_web" "$db_pwd_app_web"
-ynh_psql_create_db "$app_web" "$app_web"
+db_name_web=$(ynh_sanitize_dbid --db_name="${app}_web")
+db_user_web=$db_name_web
+db_pwd_web=$(ynh_string_random --length=30)
+ynh_app_setting_set --app=$app --key=db_name_web --value=$db_name_web
+ynh_app_setting_set --app=$app --key=db_pwd_web --value=$db_pwd_web
+ynh_psql_setup_db --db_user=$db_user_web --db_name=$db_name_web --db_pwd=$db_pwd_web
 
 #=================================================
-# MODIFY A CONFIG FILE
+# NGINX CONFIGURATION
 #=================================================
+ynh_script_progression --message="Configuring NGINX web server..."
 
-ynh_script_progression --message="Modifying necessary config files..." --weight=2
+# Create a dedicated NGINX config
+ynh_add_nginx_config
+
+#=================================================
+# SPECIFIC SETUP
+#=================================================
+# ADD A CONFIGURATION
+#=================================================
+ynh_script_progression --message="Adding a configuration file..."
 
 # mailman3 core configuration
-rest_api_admin="rest_admin"
+rest_api_admin_user="rest_admin"
 rest_api_admin_pwd=$(head -n15 /dev/urandom | tail -n +1 | tr -dc -d 'a-z0-9' | head -c15)
-ynh_app_setting_set --app=$app --key=rest_admin --value="$rest_api_admin"
+ynh_app_setting_set --app=$app --key=rest_admin_user --value="$rest_api_admin_user"
 ynh_app_setting_set --app=$app --key=rest_admin_pwd --value="$rest_api_admin_pwd"
-cp -f ../conf/mailman.cfg /etc/mailman3/mailman.cfg
-ynh_replace_string --match_string="__DOMAIN__" --replace_string="$domain" --target_file="/etc/mailman3/mailman.cfg"
-ynh_replace_string --match_string="__DB_USER__" --replace_string="$app" --target_file="/etc/mailman3/mailman.cfg"
-ynh_replace_string --match_string="__DB_NAME__" --replace_string="$app" --target_file="/etc/mailman3/mailman.cfg"
-ynh_replace_string --match_string="__DB_PWD__" --replace_string="$db_pwd_app" --target_file="/etc/mailman3/mailman.cfg"
-ynh_replace_string --match_string="__PORT_WEB__" --replace_string="$port_web" --target_file="/etc/mailman3/mailman.cfg"
-ynh_replace_string --match_string="__REST_API_ADMIN_USER__" --replace_string="$rest_api_admin" --target_file="/etc/mailman3/mailman.cfg"
-ynh_replace_string --match_string="__REST_API_ADMIN_PWD__" --replace_string="$rest_api_admin_pwd" --target_file="/etc/mailman3/mailman.cfg"
+ynh_add_config --template="../conf/mailman.cfg" --destination="/etc/mailman3/mailman.cfg"
+
+chmod 400 "/etc/mailman3/mailman.cfg"
+chown list:list "/etc/mailman3/mailman.cfg"
 
 # hyperkitty configuration
 archiver_key=$(head -n32 /dev/urandom | tail -n +1 | tr -dc -d 'a-z0-9' | head -c32)
 ynh_app_setting_set --app=$app --key=archiver_key --value="$archiver_key"
-cp -f ../conf/mailman-hyperkitty.cfg /etc/mailman3/mailman-hyperkitty.cfg
-ynh_replace_string --match_string="__DOMAIN__" --replace_string="$domain" --target_file="/etc/mailman3/mailman-hyperkitty.cfg"
-ynh_replace_string --match_string="__ARCHIVER_KEY__" --replace_string="$archiver_key" --target_file="/etc/mailman3/mailman-hyperkitty.cfg"
+ynh_add_config --template="../conf/mailman-hyperkitty.cfg" --destination="/etc/mailman3/mailman-hyperkitty.cfg"
+
+chmod 400 "/etc/mailman3/mailman-hyperkitty.cfg"
+chown list:list "/etc/mailman3/mailman-hyperkitty.cfg"
 
 # mailman3-web configuration
 secret_key=$(head -n64 /dev/urandom | tail -n +1 | tr -dc -d 'a-z0-9' | head -c64)
 ynh_app_setting_set --app=$app --key=secret_key --value="$secret_key"
-cp -f ../conf/mailman-web.py /etc/mailman3/mailman-web.py
-ynh_replace_string --match_string="__SECRET_KEY__" --replace_string="$secret_key" --target_file="/etc/mailman3/mailman-web.py"
-ynh_replace_string --match_string="__DOMAIN__" --replace_string="$domain" --target_file="/etc/mailman3/mailman-web.py"
-ynh_replace_string --match_string="__DOMAIN_IP__" --replace_string="$domain_ip" --target_file="/etc/mailman3/mailman-web.py"
-ynh_replace_string --match_string="__PORT_WEB__" --replace_string="$port_web" --target_file="/etc/mailman3/mailman-web.py"
-ynh_replace_string --match_string="__REST_API_ADMIN_USER__" --replace_string="$rest_api_admin" --target_file="/etc/mailman3/mailman-web.py"
-ynh_replace_string --match_string="__REST_API_ADMIN_PWD__" --replace_string="$rest_api_admin_pwd" --target_file="/etc/mailman3/mailman-web.py"
-ynh_replace_string --match_string="__ARCHIVER_KEY__" --replace_string="$archiver_key" --target_file="/etc/mailman3/mailman-web.py"
-ynh_replace_string --match_string="__DB_NAME__" --replace_string="$app_web" --target_file="/etc/mailman3/mailman-web.py"
-ynh_replace_string --match_string="__DB_USER__" --replace_string="$app_web" --target_file="/etc/mailman3/mailman-web.py"
-ynh_replace_string --match_string="__DB_PWD__" --replace_string="$db_pwd_app_web" --target_file="/etc/mailman3/mailman-web.py"
+ynh_add_config --template="../conf/mailman-web.py" --destination="/etc/mailman3/mailman-web.py"
+
+chmod 440 "/etc/mailman3/mailman-web.py"
+chown list:www-data "/etc/mailman3/mailman-web.py"
 
 #=================================================
 # RUN DATABASE MIGRATIONS
 #=================================================
+ynh_script_progression --message="Running database migrations..."
 
-ynh_script_progression --message="Running database migrations..." --weight=6
-
-cd /usr/share/mailman3-web && python3 manage.py migrate || ynh_die --message="Mailman3 migrations failed!"
+pushd /usr/share/mailman3-web
+	python3 manage.py migrate || ynh_die --message="Mailman3 migrations failed!"
+popd
 
 #=================================================
-# STORE THE CONFIG FILE CHECKSUM
+# POSTFIX CONFIGURATION
 #=================================================
+ynh_script_progression --message="Configuring postfix mail server..."
 
-ynh_script_progression --message="Storing configuration checksum..." --weight=1
+# Add postfix configuration hook and regen postfix conf
+cp -R ../sources/hooks/conf_regen/98-postfix_mailman3 /usr/share/yunohost/hooks/conf_regen/
+yunohost tools regen-conf postfix
+ynh_systemd_action --service_name=postfix --action="restart"
 
-ynh_store_file_checksum --file=/etc/mailman3/mailman.cfg
-ynh_store_file_checksum --file=/etc/mailman3/mailman-hyperkitty.cfg
-ynh_store_file_checksum --file=/etc/mailman3/mailman-web.cfg
+#=================================================
+# SETUP SYSTEMD
+#=================================================
+ynh_script_progression --message="Configuring a systemd service..."
+
+# Create a dedicated systemd config
+systemctl enable $app.service --quiet
+systemctl enable "$app-web".service --quiet
 
 #=================================================
 # GENERIC FINALIZATION
 #=================================================
-
+# INTEGRATE SERVICE IN YUNOHOST
 #=================================================
-# ADVERTISE SERVICE IN ADMIN PANEL
-#=================================================
+ynh_script_progression --message="Integrating service in YunoHost..."
 
-ynh_script_progression --message="Advertising services in admin panel..." --weight=3
-
-yunohost service add "$app"
-
-yunohost service add "$app-web"
+yunohost service add $app --description="Mailman3 daemon" --log="/var/log/$app/mailman.log"
+yunohost service add "$app-web" --description="Mailman3 web daemon" --log="/var/log/$app/web/mailman-web.log"
 
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
+ynh_script_progression --message="Starting a systemd service..."
 
-ynh_script_progression --message="Starting the $app and $app-web services..." --weight=10
-
-ynh_systemd_action --service_name=$app --action=enable
-ynh_systemd_action --service_name="$app-web" --action=enable
-
-ynh_systemd_action --service_name=$app --action=restart
-ynh_systemd_action --service_name="$app-web" --action=restart
+# Start a systemd service
+ynh_systemd_action --service_name=$app --action="restart"
+ynh_systemd_action --service_name="$app-web" --action="restart"
 
 #=================================================
 # SETUP SSOWAT
 #=================================================
+ynh_script_progression --message="Configuring permissions..."
 
-ynh_script_progression --message="Configuring SSOwat..." --weight=1
-
+# Make app public if necessary
 if [ $is_public -eq 1 ]
 then
-  ynh_app_setting_set --app=$app --key=unprotected_uris --value="/"
+	# Everyone can access the app.
+	# The "main" permission is automatically created before the install script.
+	ynh_permission_update --permission="main" --add="visitors"
 fi
 
 #=================================================
 # RELOAD NGINX
 #=================================================
-
-ynh_script_progression --message="Reloading NGINX web server..." --weight=2
+ynh_script_progression --message="Reloading NGINX web server..."
 
 ynh_systemd_action --service_name=nginx --action=reload
 
@@ -238,4 +202,4 @@ ynh_systemd_action --service_name=nginx --action=reload
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Installation of $app completed" --last
+ynh_script_progression --message="Installation of $app completed"
