@@ -44,12 +44,15 @@ ynh_backup --src_path="/etc/nginx/conf.d/$domain.d/$app.conf"
 
 #=================================================
 # SPECIFIC BACKUP
-
 #=================================================
 # BACKUP VARIOUS FILES
 #=================================================
 
-ynh_backup --src_path="/etc/$app"
+ynh_backup --src_path="/etc/$app/mailman.cfg"
+ynh_backup --src_path="/etc/$app/mailman-hyperkitty.cfg"
+ynh_backup --src_path="/etc/$app/mailman-web.py"
+
+ynh_backup --src_path="/usr/share/yunohost/hooks/conf_regen/98-postfix_mailman3"
 
 #=================================================
 # BACKUP THE POSTGRESQL DATABASE

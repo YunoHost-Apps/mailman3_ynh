@@ -134,7 +134,7 @@ EMAILNAME = '__DOMAIN__'
 # otherwise the emails may get rejected.
 # https://docs.djangoproject.com/en/1.8/ref/settings/#default-from-email
 # DEFAULT_FROM_EMAIL = "mailing-lists@you-domain.org"
-DEFAULT_FROM_EMAIL = 'postorius@{}'.format(EMAILNAME)
+DEFAULT_FROM_EMAIL = 'root@{}'.format(EMAILNAME)
 
 # If you enable email reporting for error messages, this is where those emails
 # will appear to be coming from. Make sure you set a valid domain name,

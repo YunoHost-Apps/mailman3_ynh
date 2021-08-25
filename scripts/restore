@@ -83,15 +83,34 @@ ynh_psql_execute_file_as_root --file="./db_web.sql" --database=$db_name_web
 #=================================================
 ynh_script_progression --message="Restoring various files..."
 
-ynh_restore_file --origin_path="/etc/$app/"
+ynh_restore_file --origin_path="/usr/share/yunohost/hooks/conf_regen/98-postfix_mailman3"
+yunohost tools regen-conf postfix
+ynh_systemd_action --service_name=postfix --action="restart"
+
+ynh_secure_remove --file="/etc/$app/mailman.cfg"
+ynh_restore_file --origin_path="/etc/$app/mailman.cfg"
+
+ynh_secure_remove --file="/etc/$app/mailman-hyperkitty.cfg"
+ynh_restore_file --origin_path="/etc/$app/mailman-hyperkitty.cfg"
+
+ynh_secure_remove --file="/etc/$app/mailman-web.py"
+ynh_restore_file --origin_path="/etc/$app/mailman-web.py"
+
+#=================================================
+# RESTORE SYSTEMD
+#=================================================
+ynh_script_progression --message="Restoring the systemd configuration..."
+
+systemctl enable $app.service --quiet
+systemctl enable "$app-web".service --quiet
 
 #=================================================
 # INTEGRATE SERVICE IN YUNOHOST
 #=================================================
 ynh_script_progression --message="Integrating service in YunoHost..."
 
-yunohost service add $app --description="Mailman3 daemon"
-yunohost service add "$app-web" --description="Mailman3 web daemon"
+yunohost service add $app --description="Mailman3 daemon" --log="/var/log/$app/mailman.log"
+yunohost service add "$app-web" --description="Mailman3 web daemon" --log="/var/log/$app/web/mailman-web.log"
 
 #=================================================
 # START SYSTEMD SERVICE
@@ -99,16 +118,13 @@ yunohost service add "$app-web" --description="Mailman3 web daemon"
 ynh_script_progression --message="Starting a systemd service..."
 
 # Start a systemd service
-ynh_systemd_action --service_name=$app --action=enable
-ynh_systemd_action --service_name="$app-web" --action=enable
-
 ynh_systemd_action --service_name=$app --action=restart
 ynh_systemd_action --service_name="$app-web" --action=restart
 
 #=================================================
 # GENERIC FINALIZATION
 #=================================================
-# RELOAD NGINX AND PHP-FPM
+# RELOAD NGINX
 #=================================================
 ynh_script_progression --message="Reloading NGINX web server..."
 

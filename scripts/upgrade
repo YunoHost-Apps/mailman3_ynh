@@ -36,6 +36,7 @@ ynh_script_progression --message="Backing up the app before upgrading (may take 
 # Backup the current version of the app
 ynh_backup_before_upgrade
 ynh_clean_setup () {
+	ynh_clean_check_starting
 	# Restore it if the upgrade fails
 	ynh_restore_upgradebackup
 }
@@ -80,14 +81,24 @@ ynh_script_progression --message="Upgrading dependencies..."
 ynh_install_app_dependencies $pkg_dependencies
 
 #=================================================
+# POSTFIX CONFIGURATION
+#=================================================
+ynh_script_progression --message="Configuring postfix mail server..."
+
+# Add postfix configuration hook and regen postfix conf
+cp -R ../sources/hooks/conf_regen/98-postfix_mailman3 /usr/share/yunohost/hooks/conf_regen/
+yunohost tools regen-conf postfix
+ynh_systemd_action --service_name=postfix --action="reload"
+
+#=================================================
 # GENERIC FINALIZATION
 #=================================================
 # INTEGRATE SERVICE IN YUNOHOST
 #=================================================
 ynh_script_progression --message="Integrating service in YunoHost..."
 
-yunohost service add $app --description="Mailman3 daemon"
-yunohost service add "$app-web" --description="Mailman3 web daemon"
+yunohost service add $app --description="Mailman3 daemon" --log="/var/log/$app/mailman.log"
+yunohost service add "$app-web" --description="Mailman3 web daemon" --log="/var/log/$app/web/mailman-web.log"
 
 #=================================================
 # START SYSTEMD SERVICE

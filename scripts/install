@@ -128,6 +128,9 @@ secret_key=$(head -n64 /dev/urandom | tail -n +1 | tr -dc -d 'a-z0-9' | head -c6
 ynh_app_setting_set --app=$app --key=secret_key --value="$secret_key"
 ynh_add_config --template="../conf/mailman-web.py" --destination="/etc/mailman3/mailman-web.py"
 
+chmod 440 "/etc/mailman3/mailman-web.py"
+chown list:www-data "/etc/mailman3/mailman-web.py"
+
 #=================================================
 # RUN DATABASE MIGRATIONS
 #=================================================
@@ -138,14 +141,33 @@ pushd /usr/share/mailman3-web
 popd
 
 #=================================================
+# POSTFIX CONFIGURATION
+#=================================================
+ynh_script_progression --message="Configuring postfix mail server..."
+
+# Add postfix configuration hook and regen postfix conf
+cp -R ../sources/hooks/conf_regen/98-postfix_mailman3 /usr/share/yunohost/hooks/conf_regen/
+yunohost tools regen-conf postfix
+ynh_systemd_action --service_name=postfix --action="restart"
+
+#=================================================
+# SETUP SYSTEMD
+#=================================================
+ynh_script_progression --message="Configuring a systemd service..."
+
+# Create a dedicated systemd config
+systemctl enable $app.service --quiet
+systemctl enable "$app-web".service --quiet
+
+#=================================================
 # GENERIC FINALIZATION
 #=================================================
 # INTEGRATE SERVICE IN YUNOHOST
 #=================================================
 ynh_script_progression --message="Integrating service in YunoHost..."
 
-yunohost service add $app --description="Mailman3 daemon"
-yunohost service add "$app-web" --description="Mailman3 web daemon"
+yunohost service add $app --description="Mailman3 daemon" --log="/var/log/$app/mailman.log"
+yunohost service add "$app-web" --description="Mailman3 web daemon" --log="/var/log/$app/web/mailman-web.log"
 
 #=================================================
 # START SYSTEMD SERVICE
@@ -153,8 +175,8 @@ yunohost service add "$app-web" --description="Mailman3 web daemon"
 ynh_script_progression --message="Starting a systemd service..."
 
 # Start a systemd service
-ynh_systemd_action --service_name=$app --action="start"
-ynh_systemd_action --service_name="$app-web" --action="start"
+ynh_systemd_action --service_name=$app --action="restart"
+ynh_systemd_action --service_name="$app-web" --action="restart"
 
 #=================================================
 # SETUP SSOWAT
