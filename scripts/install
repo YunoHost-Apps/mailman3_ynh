@@ -34,9 +34,9 @@ app=$YNH_APP_INSTANCE_NAME
 #=================================================
 ynh_script_progression --message="Validating installation parameters..."
 
-test ! -e /usr/share/$app-web || ynh_die --message="Mailman3 is already installed !"
+test ! -e /usr/share/$app-web || ynh_die --message="Mailman3 is already installed!"
 
-test ! -e /etc/$app || ynh_die --message="Mailman3 is already installed !"
+test ! -e /etc/$app || ynh_die --message="Mailman3 is already installed!"
 
 # Register (book) web path
 ynh_webpath_register --app=$app --domain=$domain --path_url=$path_url

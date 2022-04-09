@@ -23,7 +23,7 @@
         "url": "https://decentral1.se/"
     },
     "requirements": {
-        "yunohost": ">= 4.1.3"
+        "yunohost": ">= 4.3.0"
     },
     "multi_instance": false,
     "services": [
@@ -33,8 +33,7 @@
         "install" : [
             {
                 "name": "domain",
-                "type": "domain",
-                "example": "example.com"
+                "type": "domain"
             },
             {
                 "name": "is_public",
