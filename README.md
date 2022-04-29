@@ -50,7 +50,7 @@ You should then attempt to log in with this user account in the web UI. Once you
 
 ### Setup your main domain
 
-You'll need to log in as administrator and visit the `/admin/site/site`.
+You'll need to log in as administrator and visit the `/admin/sites/site/`.
 
 If you're Mailman3 is setup on `https://myyunohost.org` then that would be the following:
 
