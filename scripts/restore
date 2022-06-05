@@ -39,8 +39,6 @@ db_user_web=$db_name_web
 #=================================================
 ynh_script_progression --message="Validating restoration parameters..."
 
-ynh_webpath_available --domain=$domain --path_url=$path_url \
-	|| ynh_die --message="Path not available: ${domain}${path_url}"
 test ! -d /usr/share/mailman3-web \
   || ynh_die --message="There is already an installation present at /usr/share/mailman3-web?"
 
