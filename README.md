@@ -5,7 +5,7 @@ It shall NOT be edited by hand.
 
 # Mailman3 for YunoHost
 
-[![Integration level](https://dash.yunohost.org/integration/mailman3.svg)](https://dash.yunohost.org/appci/app/mailman3) ![](https://ci-apps.yunohost.org/ci/badges/mailman3.status.svg) ![](https://ci-apps.yunohost.org/ci/badges/mailman3.maintain.svg)  
+[![Integration level](https://dash.yunohost.org/integration/mailman3.svg)](https://dash.yunohost.org/appci/app/mailman3) ![Working status](https://ci-apps.yunohost.org/ci/badges/mailman3.status.svg) ![Maintenance status](https://ci-apps.yunohost.org/ci/badges/mailman3.maintain.svg)  
 [![Install Mailman3 with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=mailman3)
 
 *[Lire ce readme en français.](./README_fr.md)*
@@ -23,7 +23,7 @@ Electronic mailing lists manager
 
 ## Screenshots
 
-![](./doc/screenshots/screenshot1.webp)
+![Screenshot of Mailman3](./doc/screenshots/screenshot1.webp)
 
 ## Disclaimers / important information
 
@@ -121,22 +121,23 @@ Finally, you also configure things through the Django web admin available at `/a
 
 ## Documentation and resources
 
-* Official app website: http://www.list.org/
-* Official user documentation: http://docs.mailman3.org/en/latest/userguide.html
-* Official admin documentation: https://docs.mailman3.org/en/latest/
-* Upstream app code repository: https://gitlab.com/mailman/mailman-suite
-* YunoHost documentation for this app: https://yunohost.org/app_mailman3
-* Report a bug: https://github.com/YunoHost-Apps/mailman3_ynh/issues
+* Official app website: <http://www.list.org/>
+* Official user documentation: <http://docs.mailman3.org/en/latest/userguide.html>
+* Official admin documentation: <https://docs.mailman3.org/en/latest/>
+* Upstream app code repository: <https://gitlab.com/mailman/mailman-suite>
+* YunoHost documentation for this app: <https://yunohost.org/app_mailman3>
+* Report a bug: <https://github.com/YunoHost-Apps/mailman3_ynh/issues>
 
 ## Developer info
 
 Please send your pull request to the [testing branch](https://github.com/YunoHost-Apps/mailman3_ynh/tree/testing).
 
 To try the testing branch, please proceed like that.
-```
+
+``` bash
 sudo yunohost app install https://github.com/YunoHost-Apps/mailman3_ynh/tree/testing --debug
 or
 sudo yunohost app upgrade mailman3 -u https://github.com/YunoHost-Apps/mailman3_ynh/tree/testing --debug
 ```
 
-**More info regarding app packaging:** https://yunohost.org/packaging_apps
+**More info regarding app packaging:** <https://yunohost.org/packaging_apps>
