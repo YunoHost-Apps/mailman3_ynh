@@ -17,7 +17,7 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 
 Electronic mailing lists manager
 
-**Shipped version:** 1.0~ynh1
+**Shipped version:** 1.0~ynh2
 
 **Demo:** https://lists.mailman3.org/mailman3/lists/
 
@@ -35,58 +35,9 @@ Electronic mailing lists manager
     * Users can also just sign up themselves to manage details
     * Users can use mailing lists without signing up?
 
-## Post-installation steps
+Classical admin is available on the page: https://myyunohost.org/
 
-### Setup Admin User
-
-You must [configure the admin user](http://docs.mailman3.org/en/latest/config-web.html#setting-up-admin-account):
-
-```bash
-$ cd /usr/share/mailman3-web
-$ python3 manage.py createsuperuser
-```
-
-You should then attempt to log in with this user account in the web UI. Once you've logged in, a confirmation mail will be sent to your email address that you specified. Therefore, you should have something like [Rainloop](https://github.com/YunoHost-Apps/rainloop_ynh) installed to view mail on your YunoHost installation.
-
-### Setup your main domain
-
-You'll need to log in as administrator and visit the `/admin/site/site`.
-
-If you're Mailman3 is setup on `https://myyunohost.org` then that would be the following:
-
-> https://myyunohost.org/admin/site/site
-
-### Configure incoming mail
-
-Mailman3 implements an LMTP server for receiving mail from Postfix. This means that Mailman3 doesn't need anything from Dovecot. This is important to understand because Dovecot is the default YunoHost local delivery agent. Therefore, the default YunoHost Postfix configuration uses Dovecot. So, in order to deliver incoming mail, we need to override which delivery agent handles which mails based on the addresses. In other words, if you create a mailing list "mylist@myyunohost.org" you want Mailman3's LMTP server to receive this, *not* Dovecot, becaues Dovecot only delivers to LDAP created user accounts.
-
-You'll need to add this to your Postfix configuration:
-
-```bash
-owner_request_special = no
-
-transport_maps =
-  hash:/var/lib/mailman3/data/postfix_lmtp
-
-local_recipient_maps =
-  hash:/var/lib/mailman3/data/postfix_lmtp
-
-virtual_mailbox_maps = ldap:/etc/postfix/ldap-accounts.cf, hash:/var/lib/mailman3/data/postfix_lmtp
-```
-
-And then run:
-
-```bash
-$ sudo -su list mailman aliases
-```
-
-This is unfortunately a manual step at this point because the package remains experimental. Once it matures, this will be integrated into a hook or the default Postfix configuration. For now, remember that when you run `yunohost tools regen-conf postfix` or if any installation invokes `regen-conf`, your Postfix configuration will not be changed because it has diverged from the default configuration. This may cause you problems if YunoHost core expects that there is some new value in your Postfix configuration.
-
-### Configure outgoing mail
-
-Postfix relies on using SMTP which should be configured in your `/etc/postfix/main.cf`.
-
-You should make sure that you have outgoing mail working before getting started with Mailman 3.
+Django admin on: https://myyunohost.org/admin/
 
 ## General Configuration
 
