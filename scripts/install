@@ -26,6 +26,8 @@ ynh_abort_if_errors
 domain=$YNH_APP_ARG_DOMAIN
 path_url="/"
 is_public=$YNH_APP_ARG_IS_PUBLIC
+admin=$YNH_APP_ARG_ADMIN
+password=$YNH_APP_ARG_PASSWORD
 
 app=$YNH_APP_INSTANCE_NAME
 
@@ -48,6 +50,8 @@ ynh_script_progression --message="Storing installation settings..."
 
 ynh_app_setting_set --app=$app --key=domain --value=$domain
 ynh_app_setting_set --app=$app --key=path --value=$path_url
+ynh_app_setting_set --app=$app --key=admin --value=admin
+ynh_app_setting_set --app=$app --key=password --value=password
 
 #=================================================
 # STANDARD MODIFICATIONS
@@ -141,6 +145,22 @@ pushd /usr/share/mailman3-web
 popd
 
 #=================================================
+# CREATE SUPERUSER
+#=================================================
+ynh_script_progression --message="Creating superuser..."
+pushd /usr/share/mailman3-web
+    echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('$admin', '$email', '$password')" | python manage.py shell
+popd
+
+#=================================================
+# CONFIGURE MAINDOMAIN
+#=================================================
+ynh_script_progression --message="Configuring maindomain..."
+pushd /usr/share/mailman3-web
+    echo "UPDATE django_site SET domain='$domain',name='$domain' WHERE domain='example.com';" | python3 manage.py dbshell
+popd
+
+#=================================================
 # POSTFIX CONFIGURATION
 #=================================================
 ynh_script_progression --message="Configuring postfix mail server..."
@@ -148,6 +168,7 @@ ynh_script_progression --message="Configuring postfix mail server..."
 # Add postfix configuration hook and regen postfix conf
 cp -R ../sources/hooks/conf_regen/98-postfix_mailman3 /usr/share/yunohost/hooks/conf_regen/
 yunohost tools regen-conf postfix
+sudo -su list mailman aliases
 ynh_systemd_action --service_name=postfix --action="restart"
 
 #=================================================
