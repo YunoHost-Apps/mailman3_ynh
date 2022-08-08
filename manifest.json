@@ -6,7 +6,7 @@
         "en": "Electronic mailing lists manager",
         "fr": "Un gestionnaire de liste de discussion par email"
     },
-    "version": "1.0~ynh2",
+    "version": "1.0~ynh3",
     "url": "http://www.list.org/",
     "upstream": {
         "license": "AGPL-3.0-or-later",
@@ -30,7 +30,7 @@
         "nginx"
     ],
     "arguments": {
-        "install" : [
+        "install": [
             {
                 "name": "domain",
                 "type": "domain"
