@@ -17,7 +17,7 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 
 Electronic mailing lists manager
 
-**Shipped version:** 1.0~ynh2
+**Shipped version:** 1.0~ynh3
 
 
 **Demo:** https://lists.mailman3.org/mailman3/lists/
