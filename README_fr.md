@@ -17,7 +17,8 @@ Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour
 
 Un gestionnaire de liste de discussion par email
 
-**Version incluse :** 1.0~ynh2
+**Version incluse :** 1.0~ynh2
+
 
 **Démo :** https://lists.mailman3.org/mailman3/lists/
 
