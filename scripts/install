@@ -31,6 +31,8 @@ password=$YNH_APP_ARG_PASSWORD
 
 app=$YNH_APP_INSTANCE_NAME
 
+email=$(ynh_user_get_info --username=$admin --key="mail")
+
 #=================================================
 # CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
 #=================================================
