@@ -10,7 +10,7 @@ do_pre_regen() {
 
 	# FIXME : check this file actually exists to not crash when only running this
 	# hook alone
-	
+    sed -i 's@virtual_mailbox_maps = ldap:/etc/postfix/ldap-accounts.cf@virtual_mailbox_maps = ldap:/etc/postfix/ldap-accounts.cf, hash:/var/lib/mailman3/data/postfix_lmtp@' $postfix_main_cf
 	cat << EOT >> $postfix_main_cf
 unknown_local_recipient_reject_code = 550
 owner_request_special = no
