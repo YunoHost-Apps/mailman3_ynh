@@ -20,6 +20,7 @@ Electronic mailing lists manager
 **Shipped version:** 1.0~ynh3
 
 
+
 **Demo:** https://lists.mailman3.org/mailman3/lists/
 
 ## Screenshots
