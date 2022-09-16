@@ -44,9 +44,9 @@
                 "name": "admin",
                 "type": "user"
             },
-                        {
+            {
                 "name": "email",
-                "type": "string"
+                "type": "string",
                 "default": "user@example.org"
             },
             {
