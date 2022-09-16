@@ -28,6 +28,7 @@ path_url="/"
 is_public=$YNH_APP_ARG_IS_PUBLIC
 admin=$YNH_APP_ARG_ADMIN
 password=$YNH_APP_ARG_PASSWORD
+email=$YNH_APP_ARG_EMAIL
 
 app=$YNH_APP_INSTANCE_NAME
 
