@@ -45,6 +45,10 @@ ram.runtime = "800M"
     [install.password]
     type = "password"
 
+    [install.email]
+    type = "email"
+    example = "user@example.org"
+
 [resources]
     [resources.system_user]
 
