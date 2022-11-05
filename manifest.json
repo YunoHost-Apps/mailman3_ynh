@@ -45,6 +45,11 @@
                 "type": "user"
             },
             {
+                "name": "email",
+                "type": "string",
+                "default": "user@example.org"
+            },
+            {
                 "name": "password",
                 "type": "password"
             }

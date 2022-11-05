@@ -28,6 +28,7 @@ path_url="/"
 is_public=$YNH_APP_ARG_IS_PUBLIC
 admin=$YNH_APP_ARG_ADMIN
 password=$YNH_APP_ARG_PASSWORD
+email=$YNH_APP_ARG_EMAIL
 
 app=$YNH_APP_INSTANCE_NAME
 
@@ -149,7 +150,7 @@ popd
 #=================================================
 ynh_script_progression --message="Creating superuser..."
 pushd /usr/share/mailman3-web
-    echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('$admin', '$email', '$password')" | python manage.py shell
+    echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('$admin', '$email', '$password')" | python3 manage.py shell
 popd
 
 #=================================================
