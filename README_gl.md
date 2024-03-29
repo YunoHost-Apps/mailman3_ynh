@@ -1,32 +1,32 @@
 <!--
-Nota bene : ce README est automatiquement généré par <https://github.com/YunoHost/apps/tree/master/tools/readme_generator>
-Il NE doit PAS être modifié à la main.
+NOTA: Este README foi creado automáticamente por <https://github.com/YunoHost/apps/tree/master/tools/readme_generator>
+NON debe editarse manualmente.
 -->
 
-# Mailman3 pour YunoHost
+# Mailman3 para YunoHost
 
-[![Niveau d’intégration](https://dash.yunohost.org/integration/mailman3.svg)](https://dash.yunohost.org/appci/app/mailman3) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/mailman3.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/mailman3.maintain.svg)
+[![Nivel de integración](https://dash.yunohost.org/integration/mailman3.svg)](https://dash.yunohost.org/appci/app/mailman3) ![Estado de funcionamento](https://ci-apps.yunohost.org/ci/badges/mailman3.status.svg) ![Estado de mantemento](https://ci-apps.yunohost.org/ci/badges/mailman3.maintain.svg)
 
-[![Installer Mailman3 avec YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=mailman3)
+[![Instalar Mailman3 con YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=mailman3)
 
-*[Lire le README dans d'autres langues.](./ALL_README.md)*
+*[Le este README en outros idiomas.](./ALL_README.md)*
 
-> *Ce package vous permet d’installer Mailman3 rapidement et simplement sur un serveur YunoHost.*  
-> *Si vous n’avez pas YunoHost, consultez [ce guide](https://yunohost.org/install) pour savoir comment l’installer et en profiter.*
+> *Este paquete permíteche instalar Mailman3 de xeito rápido e doado nun servidor YunoHost.*  
+> *Se non usas YunoHost, le a [documentación](https://yunohost.org/install) para saber como instalalo.*
 
-## Vue d’ensemble
+## Vista xeral
 
-Un gestionnaire de liste de discussion par email
 
-**Version incluse :** 1.0~ynh2
 
-**Démo :** <https://lists.mailman3.org/mailman3/lists/>
+**Versión proporcionada:** 1.0~ynh2
 
-## Captures d’écran
+**Demo:** <https://lists.mailman3.org/mailman3/lists/>
 
-![Capture d’écran de Mailman3](./doc/screenshots/screenshot1.webp)
+## Capturas de pantalla
 
-## Avertissements / informations importantes
+![Captura de pantalla de Mailman3](./doc/screenshots/screenshot1.webp)
+
+## Avisos / información importante
 
 * Any known limitations, constrains or stuff not working, such as (but not limited to):
     * requiring a full dedicated domain
@@ -71,20 +71,20 @@ Finally, you also configure things through the Django web admin available at `/a
 
 * There may be only one installation per YunoHost.
 
-## Documentations et ressources
+## Documentación e recursos
 
-- Site officiel de l’app : <http://www.list.org/>
-- Documentation officielle utilisateur : <http://docs.mailman3.org/en/latest/userguide.html>
-- Documentation officielle de l’admin : <https://docs.mailman3.org/en/latest/>
-- Dépôt de code officiel de l’app : <https://gitlab.com/mailman/mailman-suite>
-- YunoHost Store : <https://apps.yunohost.org/app/mailman3>
-- Signaler un bug : <https://github.com/YunoHost-Apps/mailman3_ynh/issues>
+- Web oficial da app: <http://www.list.org/>
+- Documentación oficial para usuarias: <http://docs.mailman3.org/en/latest/userguide.html>
+- Documentación oficial para admin: <https://docs.mailman3.org/en/latest/>
+- Repositorio de orixe do código: <https://gitlab.com/mailman/mailman-suite>
+- Tenda YunoHost: <https://apps.yunohost.org/app/mailman3>
+- Informar dun problema: <https://github.com/YunoHost-Apps/mailman3_ynh/issues>
 
-## Informations pour les développeurs
+## Info de desenvolvemento
 
-Merci de faire vos pull request sur la [branche `testing`](https://github.com/YunoHost-Apps/mailman3_ynh/tree/testing).
+Envía a túa colaboración á [rama `testing`](https://github.com/YunoHost-Apps/mailman3_ynh/tree/testing).
 
-Pour essayer la branche `testing`, procédez comme suit :
+Para probar a rama `testing`, procede deste xeito:
 
 ```bash
 sudo yunohost app install https://github.com/YunoHost-Apps/mailman3_ynh/tree/testing --debug
@@ -92,4 +92,4 @@ ou
 sudo yunohost app upgrade mailman3 -u https://github.com/YunoHost-Apps/mailman3_ynh/tree/testing --debug
 ```
 
-**Plus d’infos sur le packaging d’applications :** <https://yunohost.org/packaging_apps>
+**Máis info sobre o empaquetado da app:** <https://yunohost.org/packaging_apps>
