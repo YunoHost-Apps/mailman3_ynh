@@ -1,10 +1,6 @@
-* Any known limitations, constrains or stuff not working, such as (but not limited to):
-    * requiring a full dedicated domain
-
 * Other infos that people should be aware of, such as:
-    * No LDAP support yet (apparently under development)
-    * Users can also just sign up themselves to manage details
-    * Users can use mailing lists without signing up?
+  * Users can also just sign up themselves to manage details
+  * Users can use mailing lists without signing up?
 
 Classical admin is available on the page: https://myyunohost.org/
 
