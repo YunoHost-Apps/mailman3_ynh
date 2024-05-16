@@ -11,6 +11,9 @@ source /usr/share/yunohost/helpers
 # INITIALIZE AND STORE SETTINGS
 #=================================================
 
+# Maybe add that as install arg ?
+email="admin@$domain"
+
 # mailman3-app database
 db_name_app=$(ynh_sanitize_dbid --db_name="${app}_app")
 db_user_app=$db_name_app
