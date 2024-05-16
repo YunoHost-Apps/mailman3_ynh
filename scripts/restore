@@ -9,12 +9,6 @@ source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
-# SANITY CHECK
-#=================================================
-test ! -e "/usr/share/$app-web" || ynh_die --message="Mailman3 is already installed!"
-test ! -e "/etc/$app" || ynh_die --message="Mailman3 is already installed!"
-
-#=================================================
 # RESTORE THE POSTGRESQL DATABASE
 #=================================================
 ynh_script_progression --message="Restoring the PostgreSQL database..."
