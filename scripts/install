@@ -10,8 +10,8 @@ source /usr/share/yunohost/helpers
 #=================================================
 # SANITY CHECK
 #=================================================
-test ! -e /usr/share/$app-web || ynh_die --message="Mailman3 is already installed!"
-test ! -e /etc/$app || ynh_die --message="Mailman3 is already installed!"
+test ! -e "/usr/share/$app-web" || ynh_die --message="Mailman3 is already installed!"
+test ! -e "/etc/$app" || ynh_die --message="Mailman3 is already installed!"
 
 #=================================================
 # INITIALIZE AND STORE SETTINGS
