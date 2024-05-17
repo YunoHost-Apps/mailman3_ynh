@@ -21,22 +21,22 @@ ynh_systemd_action --service_name="$app-web" --action="stop"
 ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
 
 # Create missing db_user_* as copy of db_name_*
-if [ -z "$db_user_app" ]; then
+if [ -z "${db_user_app:-}" ]; then
 	db_user_app="$db_name_app"
 	ynh_app_setting_set --app="$app" --key="db_user_app" --value="$db_user_app"
 fi
-if [ -z "$db_user_web" ]; then
+if [ -z "${db_user_web:-}" ]; then
 	db_user_web="$db_name_web"
 	ynh_app_setting_set --app="$app" --key="db_user_web" --value="$db_user_web"
 fi
 
 # Migrate rest_admin_* -> rest_api_admin_*
-if [ -z "$rest_api_admin_user" ]; then
+if [ -z "${rest_api_admin_user:-}" ]; then
 	rest_api_admin_user="$rest_admin_user"
 	ynh_app_setting_set --app="$app" --key="rest_api_admin_user" --value="$rest_api_admin_user"
 	ynh_app_setting_delete --app="$app" --key="rest_admin_user"
 fi
-if [ -z "$rest_api_admin_pwd" ]; then
+if [ -z "${rest_api_admin_pwd:-}" ]; then
 	rest_api_admin_pwd="$rest_admin_pwd"
 	ynh_app_setting_set --app="$app" --key="rest_api_admin_pwd" --value="$rest_api_admin_pwd"
 	ynh_app_setting_delete --app="$app" --key="rest_admin_pwd"
