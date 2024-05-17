@@ -19,6 +19,7 @@ db_name_app=$(ynh_sanitize_dbid --db_name="${app}_app")
 db_user_app=$db_name_app
 db_pwd_app=$(ynh_string_random --length=30)
 ynh_app_setting_set --app="$app" --key="db_name_app" --value="$db_name_app"
+ynh_app_setting_set --app="$app" --key="db_user_app" --value="$db_user_app"
 ynh_app_setting_set --app="$app" --key="db_pwd_app" --value="$db_pwd_app"
 
 # mailman3-web database
@@ -26,6 +27,7 @@ db_name_web=$(ynh_sanitize_dbid --db_name="${app}_web")
 db_user_web=$db_name_web
 db_pwd_web=$(ynh_string_random --length=30)
 ynh_app_setting_set --app="$app" --key="db_name_web" --value="$db_name_web"
+ynh_app_setting_set --app="$app" --key="db_user_web" --value="$db_user_web"
 ynh_app_setting_set --app="$app" --key="db_pwd_web" --value="$db_pwd_web"
 
 # mailman3 core configuration
