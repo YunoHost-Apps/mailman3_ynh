@@ -33,8 +33,8 @@ ynh_app_setting_set --app="$app" --key="db_pwd_web" --value="$db_pwd_web"
 # mailman3 core configuration
 rest_api_admin_user="rest_admin"
 rest_api_admin_pwd=$(head -n15 /dev/urandom | tail -n +1 | tr -dc -d 'a-z0-9' | head -c15)
-ynh_app_setting_set --app="$app" --key=rest_admin_user --value="$rest_api_admin_user"
-ynh_app_setting_set --app="$app" --key=rest_admin_pwd --value="$rest_api_admin_pwd"
+ynh_app_setting_set --app="$app" --key="rest_api_admin_user" --value="$rest_api_admin_user"
+ynh_app_setting_set --app="$app" --key="rest_api_admin_pwd" --value="$rest_api_admin_pwd"
 
 # hyperkitty configuration
 archiver_key=$(head -n32 /dev/urandom | tail -n +1 | tr -dc -d 'a-z0-9' | head -c32)
