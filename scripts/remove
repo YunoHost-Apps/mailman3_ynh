@@ -8,20 +8,6 @@ source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
-# LOAD SETTINGS
-#=================================================
-#REMOVEME? ynh_script_progression --message="Loading installation settings..."
-
-#REMOVEME? app=$YNH_APP_INSTANCE_NAME
-
-#REMOVEME? domain=$(ynh_app_setting_get --app=$app --key=domain)
-#REMOVEME? port=$(ynh_app_setting_get --app=$app --key=port)
-#REMOVEME? db_name_app=$(ynh_app_setting_get --app=$app --key=db_name_app)
-db_user_app=$db_name_app
-#REMOVEME? db_name_web=$(ynh_app_setting_get --app=$app --key=db_name_web)
-db_user_web=$db_name_web
-
-#=================================================
 # REMOVE SYSTEM CONFIGURATIONS
 #=================================================
 ynh_script_progression --message="Removing system configurations related to $app..." --weight=1
