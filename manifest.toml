@@ -47,6 +47,8 @@ ram.runtime = "800M"
 
     [install.email]
     type = "email"
+    ask.en = "The superuser email, can be your own email"
+    ask.fr = "L'email super-utilisateur, peut être votre email"
     example = "user@example.org"
 
 [resources]
