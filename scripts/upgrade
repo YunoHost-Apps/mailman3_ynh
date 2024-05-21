@@ -1,8 +1,6 @@
 #!/bin/bash
 
 #=================================================
-# GENERIC START
-#=================================================
 # IMPORT GENERIC HELPERS
 #=================================================
 
@@ -10,75 +8,56 @@ source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
-# LOAD SETTINGS
-#=================================================
-ynh_script_progression --message="Loading installation settings..."
-
-app=$YNH_APP_INSTANCE_NAME
-
-domain=$(ynh_app_setting_get --app=$app --key=domain)
-path_url=$(ynh_app_setting_get --app=$app --key=path)
-db_name_app=$(ynh_app_setting_get --app=$app --key=db_name_app)
-db_name_web=$(ynh_app_setting_get --app=$app --key=db_name_web)
-
-#=================================================
-# CHECK VERSION
-#=================================================
-ynh_script_progression --message="Checking version..."
-
-upgrade_type=$(ynh_check_app_version_changed)
-
-#=================================================
-# BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
-#=================================================
-ynh_script_progression --message="Backing up the app before upgrading (may take a while)..."
-
-# Backup the current version of the app
-ynh_backup_before_upgrade
-ynh_clean_setup () {
-	ynh_clean_check_starting
-	# Restore it if the upgrade fails
-	ynh_restore_upgradebackup
-}
-# Exit if an error occurs during the execution of the script
-ynh_abort_if_errors
-
-#=================================================
-# STANDARD UPGRADE STEPS
-#=================================================
 # STOP SYSTEMD SERVICE
 #=================================================
 ynh_script_progression --message="Stopping a systemd service..."
 
-ynh_systemd_action --service_name=$app --action="stop"
-ynh_systemd_action --service_name="$app-web" --action=stop
+ynh_systemd_action --service_name="$app" --action="stop"
+ynh_systemd_action --service_name="$app-web" --action="stop"
 
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
-ynh_script_progression --message="Ensuring downward compatibility..."
+ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
 
-# Cleaning legacy permissions
-if ynh_legacy_permissions_exists; then
-	ynh_legacy_permissions_delete_all
+# Create missing db_user_* as copy of db_name_*
+if [ -z "${db_user_app:-}" ]; then
+	db_user_app="$db_name_app"
+	ynh_app_setting_set --app="$app" --key="db_user_app" --value="$db_user_app"
+fi
+if [ -z "${db_user_web:-}" ]; then
+	db_user_web="$db_name_web"
+	ynh_app_setting_set --app="$app" --key="db_user_web" --value="$db_user_web"
+fi
 
-	ynh_app_setting_delete --app=$app --key=is_public
+# Migrate rest_admin_* -> rest_api_admin_*
+if [ -z "${rest_api_admin_user:-}" ]; then
+	rest_api_admin_user="$rest_admin_user"
+	ynh_app_setting_set --app="$app" --key="rest_api_admin_user" --value="$rest_api_admin_user"
+	ynh_app_setting_delete --app="$app" --key="rest_admin_user"
+fi
+if [ -z "${rest_api_admin_pwd:-}" ]; then
+	rest_api_admin_pwd="$rest_admin_pwd"
+	ynh_app_setting_set --app="$app" --key="rest_api_admin_pwd" --value="$rest_api_admin_pwd"
+	ynh_app_setting_delete --app="$app" --key="rest_admin_pwd"
 fi
 
 #=================================================
-# NGINX CONFIGURATION
+# ADD A CONFIGURATION
 #=================================================
-ynh_script_progression --message="Upgrading NGINX web server configuration..."
+ynh_script_progression --message="Updating $app's configuration files..."
 
-# Create a dedicated NGINX config
-ynh_add_nginx_config
+ynh_add_config --template="mailman.cfg" --destination="/etc/mailman3/mailman.cfg"
+chmod 400 "/etc/mailman3/mailman.cfg"
+chown list:list "/etc/mailman3/mailman.cfg"
 
-#=================================================
-# UPGRADE DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Upgrading dependencies..."
+ynh_add_config --template="mailman-hyperkitty.cfg" --destination="/etc/mailman3/mailman-hyperkitty.cfg"
+chmod 400 "/etc/mailman3/mailman-hyperkitty.cfg"
+chown list:list "/etc/mailman3/mailman-hyperkitty.cfg"
 
-ynh_exec_warn_less ynh_install_app_dependencies $pkg_dependencies
+ynh_add_config --template="mailman-web.py" --destination="/etc/mailman3/mailman-web.py"
+chmod 440 "/etc/mailman3/mailman-web.py"
+chown list:www-data "/etc/mailman3/mailman-web.py"
 
 #=================================================
 # POSTFIX CONFIGURATION
@@ -88,32 +67,29 @@ ynh_script_progression --message="Configuring postfix mail server..."
 # Add postfix configuration hook and regen postfix conf
 cp -R ../sources/hooks/conf_regen/98-postfix_mailman3 /usr/share/yunohost/hooks/conf_regen/
 yunohost tools regen-conf postfix
-ynh_systemd_action --service_name=postfix --action="reload"
+ynh_systemd_action --service_name="postfix" --action="reload"
 
 #=================================================
-# GENERIC FINALIZATION
+# REAPPLY SYSTEM CONFIGURATIONS
 #=================================================
-# INTEGRATE SERVICE IN YUNOHOST
-#=================================================
-ynh_script_progression --message="Integrating service in YunoHost..."
+ynh_script_progression --message="Upgrading system configurations related to $app..." --weight=1
 
-yunohost service add $app --description="Mailman3 daemon" --log="/var/log/$app/mailman.log"
+# Create a dedicated NGINX config
+ynh_add_nginx_config
+
+systemctl enable "$app.service" --quiet
+systemctl enable "$app-web.service" --quiet
+
+yunohost service add "$app" --description="Mailman3 daemon" --log="/var/log/$app/mailman.log"
 yunohost service add "$app-web" --description="Mailman3 web daemon" --log="/var/log/$app/web/mailman-web.log"
 
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Starting a systemd service..."
+ynh_script_progression --message="Starting $app's systemd service..." --weight=1
 
-ynh_systemd_action --service_name=$app --action=start
+ynh_systemd_action --service_name="$app" --action=start
 ynh_systemd_action --service_name="$app-web" --action=start
-
-#=================================================
-# RELOAD NGINX
-#=================================================
-ynh_script_progression --message="Reloading NGINX web server..."
-
-ynh_systemd_action --service_name=nginx --action=reload
 
 #=================================================
 # END OF SCRIPT
