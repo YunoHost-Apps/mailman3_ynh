@@ -10,72 +10,74 @@ source /usr/share/yunohost/helpers
 #=================================================
 # STOP SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Stopping a systemd service..."
+ynh_script_progression "Stopping $app's systemd service..."
 
-ynh_systemd_action --service_name="$app" --action="stop"
-ynh_systemd_action --service_name="$app-web" --action="stop"
+ynh_systemctl --service="$app" --action="stop"
+ynh_systemctl --service="$app-web" --action="stop"
 
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
-ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
+ynh_script_progression "Ensuring downward compatibility..."
 
 # Create missing db_user_* as copy of db_name_*
+# FIXMEhelpers2.1: maybe replace with: ynh_app_setting_set_default --key=db_user_app --value="$db_name_app"
 if [ -z "${db_user_app:-}" ]; then
 	db_user_app="$db_name_app"
-	ynh_app_setting_set --app="$app" --key="db_user_app" --value="$db_user_app"
+	ynh_app_setting_set --key="db_user_app" --value="$db_user_app"
 fi
+# FIXMEhelpers2.1: maybe replace with: ynh_app_setting_set_default --key=db_user_web --value="$db_name_web"
 if [ -z "${db_user_web:-}" ]; then
 	db_user_web="$db_name_web"
-	ynh_app_setting_set --app="$app" --key="db_user_web" --value="$db_user_web"
+	ynh_app_setting_set --key="db_user_web" --value="$db_user_web"
 fi
 
 # Migrate rest_admin_* -> rest_api_admin_*
 if [ -z "${rest_api_admin_user:-}" ]; then
 	rest_api_admin_user="$rest_admin_user"
-	ynh_app_setting_set --app="$app" --key="rest_api_admin_user" --value="$rest_api_admin_user"
-	ynh_app_setting_delete --app="$app" --key="rest_admin_user"
+	ynh_app_setting_set --key="rest_api_admin_user" --value="$rest_api_admin_user"
+	ynh_app_setting_delete --key="rest_admin_user"
 fi
 if [ -z "${rest_api_admin_pwd:-}" ]; then
 	rest_api_admin_pwd="$rest_admin_pwd"
-	ynh_app_setting_set --app="$app" --key="rest_api_admin_pwd" --value="$rest_api_admin_pwd"
-	ynh_app_setting_delete --app="$app" --key="rest_admin_pwd"
+	ynh_app_setting_set --key="rest_api_admin_pwd" --value="$rest_api_admin_pwd"
+	ynh_app_setting_delete --key="rest_admin_pwd"
 fi
 
 #=================================================
 # ADD A CONFIGURATION
 #=================================================
-ynh_script_progression --message="Updating $app's configuration files..."
+ynh_script_progression "Updating $app's configuration files..."
 
-ynh_add_config --template="mailman.cfg" --destination="/etc/mailman3/mailman.cfg"
+ynh_config_add --template="mailman.cfg" --destination="/etc/mailman3/mailman.cfg"
 chmod 400 "/etc/mailman3/mailman.cfg"
 chown list:list "/etc/mailman3/mailman.cfg"
 
-ynh_add_config --template="mailman-hyperkitty.cfg" --destination="/etc/mailman3/mailman-hyperkitty.cfg"
+ynh_config_add --template="mailman-hyperkitty.cfg" --destination="/etc/mailman3/mailman-hyperkitty.cfg"
 chmod 400 "/etc/mailman3/mailman-hyperkitty.cfg"
 chown list:list "/etc/mailman3/mailman-hyperkitty.cfg"
 
-ynh_add_config --template="mailman-web.py" --destination="/etc/mailman3/mailman-web.py"
+ynh_config_add --template="mailman-web.py" --destination="/etc/mailman3/mailman-web.py"
 chmod 440 "/etc/mailman3/mailman-web.py"
 chown list:www-data "/etc/mailman3/mailman-web.py"
 
 #=================================================
 # POSTFIX CONFIGURATION
 #=================================================
-ynh_script_progression --message="Configuring postfix mail server..."
+ynh_script_progression "Configuring postfix mail server..."
 
 # Add postfix configuration hook and regen postfix conf
 cp -R ../sources/hooks/conf_regen/98-postfix_mailman3 /usr/share/yunohost/hooks/conf_regen/
 yunohost tools regen-conf postfix
-ynh_systemd_action --service_name="postfix" --action="reload"
+ynh_systemctl --service="postfix" --action="reload"
 
 #=================================================
 # REAPPLY SYSTEM CONFIGURATIONS
 #=================================================
-ynh_script_progression --message="Upgrading system configurations related to $app..." --weight=1
+ynh_script_progression "Upgrading system configurations related to $app..."
 
 # Create a dedicated NGINX config
-ynh_add_nginx_config
+ynh_config_add_nginx
 
 systemctl enable "$app.service" --quiet
 systemctl enable "$app-web.service" --quiet
@@ -86,13 +88,13 @@ yunohost service add "$app-web" --description="Mailman3 web daemon" --log="/var/
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Starting $app's systemd service..." --weight=1
+ynh_script_progression "Starting $app's systemd service..."
 
-ynh_systemd_action --service_name="$app" --action=start
-ynh_systemd_action --service_name="$app-web" --action=start
+ynh_systemctl --service="$app" --action=start
+ynh_systemctl --service="$app-web" --action=start
 
 #=================================================
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Upgrade of $app completed"
+ynh_script_progression "Upgrade of $app completed"
