@@ -11,8 +11,7 @@ source /usr/share/yunohost/helpers
 # INITIALIZE AND STORE SETTINGS
 #=================================================
 
-# Maybe add that as install arg ?
-email="admin@$domain"
+admin_mail=$(ynh_user_get_info --username=$admin --key="mail")
 
 # mailman3-app database
 db_name_app=$(ynh_sanitize_dbid --db_name="${app}_app")
@@ -90,7 +89,7 @@ popd
 ynh_script_progression --message="Creating superuser..."
 
 pushd /usr/share/mailman3-web
-    echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('$admin', '$email', '$password')" | python manage.py shell
+    echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('$admin', '$admin_mail', '$password')" | python3 manage.py shell
 popd
 
 #=================================================
