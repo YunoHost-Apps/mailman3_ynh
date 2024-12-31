@@ -19,14 +19,18 @@ admindoc = "https://docs.mailman3.org/en/latest/"
 userdoc = "http://docs.mailman3.org/en/latest/userguide.html"
 code = "https://gitlab.com/mailman/mailman-suite"
 cpe = "cpe:2.3:a:gnu:mailman"
+
 fund = "https://my.fsf.org/civicrm/contribute/transact?reset=1&id=22"
 
 [integration]
-yunohost = ">=11.2"
+yunohost = ">= 11.2.30"
 architectures = "all"
 multi_instance = false
+
 ldap = false
+
 sso = false
+
 disk = "500M"
 ram.build = "800M"
 ram.runtime = "800M"
@@ -47,17 +51,29 @@ ram.runtime = "800M"
 
 [resources]
     [resources.system_user]
+    # This will provision/deprovision a unix system user
 
     [resources.install_dir]
+    # This will create/remove the install dir as /var/www/$app
+    # and store the corresponding setting $install_dir
 
     [resources.permissions]
+    # This will configure SSOwat permission for $domain/$path/
+    # The initial allowed group of user is configured via the init_main_permission question (public=visitors, private=all_users)
     main.url = "/"
 
     [resources.ports]
     main.default = 8095
 
     [resources.apt]
-    packages = ["postgresql", "lynx", "mailman3-full"]
+    # This will automatically install/uninstall the following apt packages
+    # and implicitly define the $phpversion setting as 8.0 (if phpX.Y-foobar dependencies are listed)
+    packages = [
+        "postgresql",
+        "lynx",
+        "mailman3-full",
+        "libpq-dev",
+        ]
 
     # Can' use resource helper because we need 2 dbs with specific names…
     # [resources.database]
