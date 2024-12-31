@@ -5,7 +5,9 @@ EZ editatu eskuz.
 
 # Mailman3 YunoHost-erako
 
-[![Integrazio maila](https://dash.yunohost.org/integration/mailman3.svg)](https://dash.yunohost.org/appci/app/mailman3) ![Funtzionamendu egoera](https://ci-apps.yunohost.org/ci/badges/mailman3.status.svg) ![Mantentze egoera](https://ci-apps.yunohost.org/ci/badges/mailman3.maintain.svg)
+[![Integrazio maila](https://apps.yunohost.org/badge/integration/mailman3)](https://ci-apps.yunohost.org/ci/apps/mailman3/)
+![Funtzionamendu egoera](https://apps.yunohost.org/badge/state/mailman3)
+![Mantentze egoera](https://apps.yunohost.org/badge/maintained/mailman3)
 
 [![Instalatu Mailman3 YunoHost-ekin](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=mailman3)
 
