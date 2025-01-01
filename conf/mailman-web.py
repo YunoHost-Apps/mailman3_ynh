@@ -32,7 +32,9 @@ INSTALLED_APPS = (
     'hyperkitty',
     'postorius',
     'django_mailman3',
+    # Uncomment the next line to enable the admin:
     'django.contrib.admin',
+    # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'django.contrib.auth',
     'django.contrib.contenttypes',
