@@ -5,7 +5,9 @@ Il NE doit PAS être modifié à la main.
 
 # Mailman3 pour YunoHost
 
-[![Niveau d’intégration](https://dash.yunohost.org/integration/mailman3.svg)](https://dash.yunohost.org/appci/app/mailman3) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/mailman3.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/mailman3.maintain.svg)
+[![Niveau d’intégration](https://apps.yunohost.org/badge/integration/mailman3)](https://ci-apps.yunohost.org/ci/apps/mailman3/)
+![Statut du fonctionnement](https://apps.yunohost.org/badge/state/mailman3)
+![Statut de maintenance](https://apps.yunohost.org/badge/maintained/mailman3)
 
 [![Installer Mailman3 avec YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=mailman3)
 

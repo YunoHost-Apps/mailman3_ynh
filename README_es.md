@@ -5,7 +5,9 @@ No se debe editar a mano.
 
 # Mailman3 para Yunohost
 
-[![Nivel de integración](https://dash.yunohost.org/integration/mailman3.svg)](https://dash.yunohost.org/appci/app/mailman3) ![Estado funcional](https://ci-apps.yunohost.org/ci/badges/mailman3.status.svg) ![Estado En Mantención](https://ci-apps.yunohost.org/ci/badges/mailman3.maintain.svg)
+[![Nivel de integración](https://apps.yunohost.org/badge/integration/mailman3)](https://ci-apps.yunohost.org/ci/apps/mailman3/)
+![Estado funcional](https://apps.yunohost.org/badge/state/mailman3)
+![Estado En Mantención](https://apps.yunohost.org/badge/maintained/mailman3)
 
 [![Instalar Mailman3 con Yunhost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=mailman3)
 
@@ -50,7 +52,7 @@ No se debe editar a mano.
 
 ## Información para desarrolladores
 
-Por favor enviar sus correcciones a la [`branch testing`](https://github.com/YunoHost-Apps/mailman3_ynh/tree/testing
+Por favor enviar sus correcciones a la [rama `testing`](https://github.com/YunoHost-Apps/mailman3_ynh/tree/testing).
 
 Para probar la rama `testing`, sigue asÍ:
 
